@@ -237,25 +237,16 @@ class UnoGUI:
             if history_count > 0:
                 history_cards = self.game.discard_pile[-(history_count+1):-1]
                 for i, card in enumerate(history_cards):
-                    card_frame = tk.Frame(self.history_cards_frame)
-                    card_frame.pack(side=tk.LEFT, padx=(-30 if i > 0 else 0, 0))
+                    # Create smaller cards for history
+                    card_widget = CardWidget(self.history_cards_frame, card, scale=0.6)
+                    card_widget.configure(relief=tk.FLAT, borderwidth=1)
                     
-                    # Create smaller, semi-transparent looking cards
-                    card_widget = CardWidget(card_frame, card, scale=0.6)
-                    card_widget.configure(relief=tk.FLAT)
-                    card_widget.pack()
-                    
-                    # Add transparency effect with overlay
-                    overlay = tk.Frame(card_widget, bg="#006400", width=48, height=72)
-                    overlay.place(x=0, y=0)
-                    overlay.configure(bg="#006400", highlightthickness=0)
-                    overlay.lower()
-                    card_widget.configure(bg=card_widget.cget("bg"))
-                    
-                    # Make older cards appear more faded
-                    opacity = 0.3 + (0.2 * i / history_count)
-                    card_widget.winfo_children()[0].configure(
-                        fg=card_widget.winfo_children()[0].cget("fg"))
+                    # Use place() for overlapping effect instead of pack()
+                    if i == 0:
+                        card_widget.pack(side=tk.LEFT, padx=(0, 5))
+                    else:
+                        # Place subsequent cards overlapping the previous ones
+                        card_widget.place(x=i*30, y=0)
             
             # Show current top card
             top_card = self.game.get_top_card()
@@ -296,22 +287,17 @@ class UnoGUI:
         self.status_label.config(text=f"{current_player.name} ist am Zug")
     
     def play_card(self, card_index):
-        print(f"DEBUG: play_card called with index {card_index}")
         if not self.can_play:
-            print(f"DEBUG: Cannot play - can_play is {self.can_play}")
             return
         
         player = self.game.players[0]
         if card_index >= len(player.hand):
-            print(f"DEBUG: Invalid card index {card_index} (hand size: {len(player.hand)})")
             return
             
         card = player.hand[card_index]
-        print(f"DEBUG: Attempting to play card: {card}")
         
         if not card.can_play_on(self.game.get_top_card(), self.game.declared_color):
             self.show_message("Diese Karte kannst du nicht spielen!")
-            print(f"DEBUG: Card cannot be played on {self.game.get_top_card()}")
             return
         
         self.can_play = False
