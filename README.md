@@ -10,4 +10,4 @@ Ein Text.
 
 Das ganze heißt Markdown. Dateiendung .md
 
-Ein Test mit *fett* und _kursiv_.
+Ein Test mit **fett** und _kursiv_.
