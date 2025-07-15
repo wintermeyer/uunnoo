@@ -4,8 +4,8 @@ Ein Text.
 
 ## Unterüberschrift
 
-- Aufzählung
-- Punkt 2
+- [ ] Aufzählung
+- [x] Punkt 2
 - Punkt 3
 
 Das ganze heißt Markdown. Dateiendung .md
